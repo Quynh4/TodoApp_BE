@@ -1,12 +1,12 @@
-package com.example.demo.service;
+package com.todo.service;
 
 
-import com.example.demo.DTO.*;
-import com.example.demo.entity.OTP;
-import com.example.demo.entity.User;
-import com.example.demo.repository.OTPRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.util.JwtUtil;
+import com.todo.DTO.*;
+import com.todo.entity.OTP;
+import com.todo.entity.User;
+import com.todo.repository.OTPRepository;
+import com.todo.repository.UserRepository;
+import com.todo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,29 +37,29 @@ public class AuthService {
     @Value("${otp.expiration}")
     private long otpExpiration;
 
-    public ApiResponse login(LoginRequest request) {
+    public ApiResponseDTO login(LoginRequestDTO request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getUsername());
 
         if (userOpt.isEmpty()) {
-            return new ApiResponse(false, "User not found");
+            return new ApiResponseDTO(false, "User not found");
         }
 
         User user = userOpt.get();
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return new ApiResponse(false, "Invalid credentials");
+            return new ApiResponseDTO(false, "Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(user.getUsername());
-        return new ApiResponse(true, "Login successful", token);
+        return new ApiResponseDTO(true, "Login successful", token);
     }
 
-    public ApiResponse signup(SignupRequest request) {
+    public ApiResponseDTO signup(SignupRequestDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            return new ApiResponse(false, "Username already exists");
+            return new ApiResponseDTO(false, "Username already exists");
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            return new ApiResponse(false, "Email already exists");
+            return new ApiResponseDTO(false, "Email already exists");
         }
 
         User user = new User(
@@ -69,14 +69,14 @@ public class AuthService {
         );
 
         userRepository.save(user);
-        return new ApiResponse(true, "User registered successfully");
+        return new ApiResponseDTO(true, "User registered successfully");
     }
 
-    public ApiResponse forgotPassword(ForgotPasswordRequest request) {
+    public ApiResponseDTO forgotPassword(ForgotPasswordRequestDTO request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         if (userOpt.isEmpty()) {
-            return new ApiResponse(false, "Email not found");
+            return new ApiResponseDTO(false, "Email not found");
         }
 
         User user = userOpt.get();
@@ -95,24 +95,24 @@ public class AuthService {
         // Send email
         try {
             emailService.sendOTP(request.getEmail(), otpCode);
-            return new ApiResponse(true, "OTP sent to your email");
+            return new ApiResponseDTO(true, "OTP sent to your email");
         } catch (Exception e) {
-            return new ApiResponse(false, "Failed to send email");
+            return new ApiResponseDTO(false, "Failed to send email");
         }
     }
 
-    public ApiResponse verifyOTP(VerifyOTPRequest request) {
+    public ApiResponseDTO verifyOTP(VerifyOTPRequestDTO request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         if (userOpt.isEmpty()) {
-            return new ApiResponse(false, "Email not found");
+            return new ApiResponseDTO(false, "Email not found");
         }
 
         User user = userOpt.get();
         Optional<OTP> otpOpt = otpRepository.findByUsernameAndVerifiedFalse(user.getUsername());
 
         if (otpOpt.isEmpty()) {
-            return new ApiResponse(false, "No valid OTP found");
+            return new ApiResponseDTO(false, "No valid OTP found");
         }
 
         OTP otp = otpOpt.get();
@@ -120,12 +120,12 @@ public class AuthService {
         // Check if OTP is expired
         if (otp.getRequestedAt().plusSeconds(otpExpiration / 1000).isBefore(LocalDateTime.now())) {
             otpRepository.delete(otp);
-            return new ApiResponse(false, "OTP has expired");
+            return new ApiResponseDTO(false, "OTP has expired");
         }
 
         // Check if OTP is locked due to too many attempts
         if (otp.isLocked()) {
-            return new ApiResponse(false, "OTP is locked due to too many attempts");
+            return new ApiResponseDTO(false, "OTP is locked due to too many attempts");
         }
 
         // Verify OTP
@@ -135,32 +135,32 @@ public class AuthService {
                 otp.setLocked(true);
             }
             otpRepository.save(otp);
-            return new ApiResponse(false, "Invalid OTP");
+            return new ApiResponseDTO(false, "Invalid OTP");
         }
 
         otp.setVerified(true);
         otpRepository.save(otp);
-        return new ApiResponse(true, "OTP verified successfully");
+        return new ApiResponseDTO(true, "OTP verified successfully");
     }
 
-    public ApiResponse resetPassword(ResetPasswordRequest request) {
+    public ApiResponseDTO resetPassword(ResetPasswordRequestDTO request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         if (userOpt.isEmpty()) {
-            return new ApiResponse(false, "Email not found");
+            return new ApiResponseDTO(false, "Email not found");
         }
 
         User user = userOpt.get();
         Optional<OTP> otpOpt = otpRepository.findByUsernameAndVerifiedTrue(user.getUsername());
 
         if (otpOpt.isEmpty()) {
-            return new ApiResponse(false, "No verified OTP found");
+            return new ApiResponseDTO(false, "No verified OTP found");
         }
 
         OTP otp = otpOpt.get();
 
         if (!otp.isVerified() || !otp.getCode().equals(request.getOtp())) {
-            return new ApiResponse(false, "Invalid or unverified OTP");
+            return new ApiResponseDTO(false, "Invalid or unverified OTP");
         }
 
         // Update password
@@ -170,6 +170,6 @@ public class AuthService {
         // Delete used OTP
         otpRepository.delete(otp);
 
-        return new ApiResponse(true, "Password reset successfully");
+        return new ApiResponseDTO(true, "Password reset successfully");
     }
 }

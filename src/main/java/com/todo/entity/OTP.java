@@ -1,11 +1,11 @@
-package com.example.demo.entity;
+package com.todo.entity;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "otps")
+@Table(name = "otp")
 public class OTP {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

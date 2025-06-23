@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.todo.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
     @Id
     @Column(unique = true)

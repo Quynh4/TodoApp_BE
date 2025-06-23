@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.todo.repository;
 
-import com.example.demo.entity.OTP;
+import com.todo.entity.OTP;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;

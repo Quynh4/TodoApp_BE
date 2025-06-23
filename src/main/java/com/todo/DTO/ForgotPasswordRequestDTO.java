@@ -1,9 +1,9 @@
-package com.example.demo.DTO;
+package com.todo.DTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class ForgotPasswordRequest {
+public class ForgotPasswordRequestDTO {
     @NotBlank
     @Email
     private String email;
