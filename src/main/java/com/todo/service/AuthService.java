@@ -6,7 +6,7 @@ import com.todo.entity.OTP;
 import com.todo.entity.User;
 import com.todo.repository.OTPRepository;
 import com.todo.repository.UserRepository;
-import com.todo.util.JwtUtil;
+import com.todo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,8 @@ public class AuthService {
     private long otpExpiration;
 
     public ApiResponseDTO login(LoginRequestDTO request) {
-        Optional<User> userOpt = userRepository.findByEmail(request.getUsername());
+        //ngoc fix code
+        Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
 
         if (userOpt.isEmpty()) {
             return new ApiResponseDTO(false, "User not found");
