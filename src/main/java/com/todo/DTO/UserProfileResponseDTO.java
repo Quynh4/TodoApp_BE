@@ -2,10 +2,10 @@ package com.todo.DTO;
 
 import com.todo.entity.User;
 
-public class UserProfileDTO {
+public class UserProfileResponseDTO {
     private String username;
     private String email;
-    public UserProfileDTO(User user) {
+    public UserProfileResponseDTO(User user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
     }

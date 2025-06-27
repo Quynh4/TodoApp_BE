@@ -9,19 +9,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.todo.service.UserService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    // Inject the JwtFilter bean
-    @Autowired
-    private JwtFilter jwtFilter;
+    @Bean
+    public JwtFilter jwtFilter(JwtUtil jwtUtil, UserService userService) {
+        return new JwtFilter(jwtUtil, userService);
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
