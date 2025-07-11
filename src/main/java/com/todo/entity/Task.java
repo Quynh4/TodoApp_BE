@@ -20,6 +20,9 @@ public class Task {
     private LocalDateTime start_time;
     private Priority priority;
     private Status status;
+    private LocalDateTime complete_time;
+    public Task() {
+    }
 
     public Task(String username, String title, String description, LocalDateTime start_time, Priority priority) {
         this.username = username;
@@ -44,6 +47,14 @@ public class Task {
         return id;
     }
 
+
+    public LocalDateTime getComplete_time() {
+        return complete_time;
+    }
+
+    public void setComplete_time(LocalDateTime complete_time) {
+        this.complete_time = complete_time;
+    }
 
     public @NotBlank String getUsername() {
         return username;

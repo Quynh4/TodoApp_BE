@@ -21,7 +21,7 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-    public void updateEmail(User user, ChangeEmailRequestDTO request) {
+    public void changeEmail(User user, ChangeEmailRequestDTO request) {
         String newEmail = request.getNewEmail();
         String password = request.getPassword();
         if (password == null || password.isEmpty()) {
@@ -47,7 +47,7 @@ public class UserService {
         user.setEmail(newEmail);
         userRepository.save(user);
     }
-    public void updatePassword(User user, ChangePasswordRequestDTO request) {
+    public void changePassword(User user, ChangePasswordRequestDTO request) {
         String newPassword = request.getNewPassword();
         String oldPassword = request.getOldPassword();
         if (oldPassword == null || oldPassword.isEmpty()) {

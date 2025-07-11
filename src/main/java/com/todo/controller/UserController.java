@@ -36,25 +36,23 @@ public class UserController {
         
     }
     @PostMapping("/change-email")
-    public ResponseEntity<String> updateEmail(Authentication authentication,@Valid @RequestBody ChangeEmailRequestDTO request) {
+    public ResponseEntity<String> changeEmail(Authentication authentication,@Valid @RequestBody ChangeEmailRequestDTO request) {
         try{
             User user = (User) authentication.getPrincipal();
-            userService.updateEmail(user, request);
+            userService.changeEmail(user, request);
             return ResponseEntity.ok("Email updated successfully");
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().body("Error updating email: " + e.getMessage());
         }
-
-        
     }
     @PostMapping("/change-password")
-    public ResponseEntity<String> updatePassword(Authentication authentication,@Valid @RequestBody ChangePasswordRequestDTO request) {
+    public ResponseEntity<String> changePassword(Authentication authentication,@Valid @RequestBody ChangePasswordRequestDTO request) {
         try {
             // Thực hiện cập nhật mật khẩu
             // Nếu có lỗi xảy ra, sẽ ném ra RuntimeException
             User user = (User) authentication.getPrincipal();
-            userService.updatePassword(user, request);
+            userService.changePassword(user, request);
             return ResponseEntity.ok("Password updated successfully");
         } catch (Exception e) {
             // TODO: handle exception
