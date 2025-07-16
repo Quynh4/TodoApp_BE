@@ -6,10 +6,12 @@ import com.todo.DTO.TaskUpdateRequestDTO;
 import com.todo.entity.Task;
 import com.todo.enumconstant.Status;
 import com.todo.repository.TaskRepository;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,7 +34,14 @@ public class TaskService {
     }
 
     public void updateTask(int taskid, TaskUpdateRequestDTO updatetask) {
+
         Task task = getById(taskid);
+        if(task.getStatus()==Status.Inprogress && updatetask.getStatus()==Status.Done) {
+            task.setComplete_time(LocalDateTime.now());
+        }
+        if(task.getStatus()==Status.Done && updatetask.getStatus() == Status.Inprogress) {
+            task.setComplete_time(null);
+        }
         task.setDescription(updatetask.getDescription());
         task.setPriority(updatetask.getPriority());
         task.setStatus(updatetask.getStatus());
