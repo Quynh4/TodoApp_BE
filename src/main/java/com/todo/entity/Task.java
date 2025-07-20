@@ -28,12 +28,7 @@ public class Task {
         this.username = username;
         this.title = title;
         this.description = description;
-        if(this.start_time==null) {
-            this.start_time=LocalDateTime.now();
-        }
-        else {
-            this.start_time = start_time;
-        }
+        this.start_time = start_time;
         if(this.priority==null) {
             this.priority=Priority.Low;
         }

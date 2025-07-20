@@ -82,7 +82,7 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable int id) {
-
+        taskService.deleteTask(id);
         return ResponseEntity.ok("Delete task successful");
     }
 

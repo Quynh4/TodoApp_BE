@@ -56,6 +56,10 @@ public class TaskService {
         taskRepository.save(newTask);
     }
 
+    public void deleteTask(int id) {
+        taskRepository.delete(getById(id));
+    }
+
     public int countCompletedTaskByUsername(String username) {
         // TODO Auto-generated method stub
         List<Task> tasks = taskRepository.findByUsername(username)
